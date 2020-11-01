@@ -10,7 +10,7 @@ long long mergeSort(vector<int>& a) {
 	int n = a.size();
 	long long ans = 0;
 	if (n > 1) {
-		vector <int> first;
+		vector <int> first;//аналогично
 		vector <int> second;
 		int mid = n / 2;
 		for (int i = 0; i < mid; ++i) {
@@ -19,7 +19,8 @@ long long mergeSort(vector<int>& a) {
 		for (int i = mid; i < n; ++i) {
 			second.push_back(a[i]);
 		}
-		ans = mergeSort(first) + mergeSort(second);
+		ans = mergeSort(first) + mergeSort(second);//merge sort с помощью создания множества подмассивов это совсем больно, только если ты не будешь распараллеливать
+		//на множество процессоров. Лучше переиспользовать 2 массива (основной и временный)
 		int elemfirst = 0, elemsecond = 0;
 		for (int i = 0; i < n; ++i) {
 			if ((elemsecond >= second.size()) || elemfirst < first.size() && first[elemfirst] <= second[elemsecond]) {
@@ -39,7 +40,7 @@ int main() {
 	std::ifstream in("inverse.in");
 	int n;
 	in >> n;
-	vector <int> input;
+	vector <int> input;//Вектор лучше сразу создавать нужного размера, если он известен заранее, так как push_back может забирать много времени
 	for (int i = 0; i < n; ++i) {
 		int y;
 		in >> y;
