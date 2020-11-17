@@ -23,12 +23,16 @@ private:
         std::swap(copy, str);
         delete[] copy;
     }
-
+    String(size_t sz) : sz(sz), capacity(sz), str(new char[sz]) {
+        memset(str, '\0', sz);
+    }
 public:
     String() = default;
-
-    String(size_t sz, char c = '\0') : sz(sz), capacity(sz), str(new char[sz]) {
-        memset(str, c, sz);
+    String(const char filling):sz(1), capacity(1), str(new char[1]){
+        memset(str, filling, sz);
+    }
+    String(size_t sz, char filling) : sz(sz), capacity(sz), str(new char[sz]) {
+        memset(str, filling, sz);
     }
 
     String(const char* s): sz(strlen(s)),capacity(sz), str(new char[sz]) {
@@ -123,9 +127,18 @@ public:
         return stream;
     }
     friend std::istream& operator>>(std::istream& stream, String& s) {
-        char buf[2048];
-        stream >> buf;
-        s = buf;
+        s.clear();
+        char current;
+        current = stream.get();
+        while (isspace(current)){
+            current = stream.get();
+        }
+        while (!isspace(current)) {
+            s.push_back(current);
+            current = stream.get();
+            if (current == EOF) break;
+        }
+
         return stream;
     }
     String& operator+=(const String& s) {
@@ -167,16 +180,5 @@ public:
 String operator+(const String& a, const String& b) {
     String copy = a;
     copy += b;
-    return copy;
-}
-String operator+(const String& a, const char b) {
-    String copy = a;
-    copy += b;
-    return copy;
-}
-String operator+(const char b, const String& a) {
-    String copy;
-    copy += b;
-    copy += a;
     return copy;
 }
