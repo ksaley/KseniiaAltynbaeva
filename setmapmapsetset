@@ -1,0 +1,60 @@
+#include <iostream>
+#include <map>
+#include <set>
+#include <string>
+int main(){
+        unsigned long long n;
+            int m, k;
+            std::cin >> n >> m >> k;
+            std::map <int,std::set <unsigned long long>> structure;
+            std::map <unsigned long long, std::set <int>> gdelezhitE;
+            for (int i = 0; i < k; i++) {
+                std::string request;
+                std::cin >>request;
+                if (request == "ADD") {
+                    unsigned long long e;
+                    int s;
+                    std::cin >> e >> s;
+                    structure[s].insert(e);
+                    gdelezhitE[e].insert(s);
+                }
+                if (request == "DELETE") {
+                    unsigned long long e;
+                    int s;
+                    std::cin >> e>> s;
+                    structure[s].extract(e);
+                    gdelezhitE[e].extract(s);
+                }
+                if (request == "CLEAR") {
+                    int s;
+                    std::cin >> s;
+                    for (auto now : structure[s]) {
+                        gdelezhitE[now].extract(s);
+                    }
+                    structure[s].clear();
+                }
+                if (request == "LISTSET") {
+                    int s;
+                    std::cin >> s;
+                    if(!structure[s].empty())
+                        for (auto now : structure[s]) {
+                        std::cout << now << ' ';
+                    } else {
+                            std::cout << -1 ;
+                        }
+                    std::cout << std::endl;
+                }
+                if (request == "LISTSETSOF") {
+                    unsigned long long e;
+                    std::cin >> e;
+                    if(!gdelezhitE[e].empty())
+                        for (auto now : gdelezhitE[e]) {
+                            std::cout << now << ' ';
+                        } else {
+                        std::cout << -1;
+                    }
+                    std::cout << std::endl;
+                }
+            }
+            return 0;
+}
