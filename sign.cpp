@@ -47,7 +47,7 @@ void change(std::vector <int>& even, std::vector <int>& odd) {
 	if (position % 2) { // меняем нечетные в своем массиве
 		ModifyElement(odd, position, newvalue);
 	}
-	else { // и четные в своем
+	else { // и  четные в своем
 		ModifyElement(even, position, newvalue);
 	}
 }
