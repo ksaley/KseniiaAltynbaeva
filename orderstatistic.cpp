@@ -16,6 +16,7 @@ int partition(std::vector <long long>& input, int begin, int end) {
 	std::swap(input[result + 1], input[x]);
 	return result + 1;
 }
+
 int kth(std::vector <long long>& input, int k) {
 	int left = 0, right = input.size();
 	while (true) {
@@ -31,6 +32,7 @@ int kth(std::vector <long long>& input, int k) {
 		}
 	}
 }
+
 int main() {
 	std::ios_base::sync_with_stdio(0);
 	std::cin.tie(0);
