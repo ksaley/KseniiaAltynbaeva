@@ -25,7 +25,7 @@ void  siftDown(std::pair <long long, int>* heap, int* pointer, int size) {
 }
 void insert(std::pair<long long, int>* heap, int *pointer, int size, int i) {
 	long long x;
-	scanf("%lld", &x);
+	scanf("%lld", &x);// Это лучше вынести в main, так как это точно не часть функционала insert
 	heap[size].first = x;
 	heap[size].second = i + 1;
 	pointer[i + 1] = size;
