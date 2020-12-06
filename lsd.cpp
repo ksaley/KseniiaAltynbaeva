@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+
 void stableSort(std::vector <long long>& input, int rank) {
 	std::vector <int> count(10, 0);
 	for (int i = 0; i < input.size(); ++i) {
