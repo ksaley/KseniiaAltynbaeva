@@ -6,6 +6,8 @@ void siftUp(std::vector <long long>& heap, long long i) {
 		i /= 2;
 	}
 }
+
+
 void siftDown(std::vector<long long>& heap) {
 	long long i = 1;
 	while (2 * i < heap.size()) {
