@@ -3,8 +3,9 @@
 #include <set>
 #include <string>
 
-void addition(std::map <int, std::set <unsigned long long>>& listofsets,
-std::map <unsigned long long, std::set <int>>& gdelezhitE) {
+// Зачем превращать глаголы в существительные. Можно было бы так и назвать add_element; delete_element; clear_set
+void addition(std::map <int, std::set <unsigned long long>>& listofsets, 
+std::map <unsigned long long, std::set <int>>& gdelezhitE) {// gdelezitE :)))))
 	unsigned long long e;
 	int s;
 	std::cin >> e >> s;
@@ -62,7 +63,8 @@ int main() {
 	unsigned long long n;
 	int m, k;
 	std::cin >> n >> m >> k;
-	std::map <int, std::set <unsigned long long>> listofsets;
+	std::map <int, std::set <unsigned long long>> listofsets;// использовать эту структуру в рамках задачи довольно избыточно
+	//так как там явно указано количество множеств и можно было бы использовать обычный массив. А для защиты от создания ненужных множеств можно хранить ссылки на элементы
 	std::map <unsigned long long, std::set <int>> gdelezhitE;
 	for (int i = 0; i < k; ++i) {
 		std::string request;
