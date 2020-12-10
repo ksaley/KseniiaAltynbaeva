@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+
 class Tree {
 private:
     struct Node{
@@ -10,6 +11,7 @@ private:
         Node(long long x): value(x), balance(1), leftChild(nullptr),rightChild(nullptr) {}
     };
     Node* root = nullptr;
+    
 public:
     int balance(Node* current) {
         return current?current->balance:0;
@@ -17,7 +19,7 @@ public:
     int difference(Node* current) {
         return balance(current->rightChild) - balance(current->leftChild);
     }
-    void fixBalance(Node* current) {
+    void fixBalance(Node* current) {// как понимаю, баланс это высота дерева, лучше так и называть
         int left = balance(current->leftChild);
         int right = balance(current->rightChild);
        current->balance = (left>right?left:right) + 1;
@@ -44,7 +46,7 @@ public:
         fixBalance(daughter);
         return daughter;
     }
-    Node* balancing(Node* current)
+    Node* balancing(Node* current)// Как понимаю, эта функция всегда возвращает на выход то, что приняла. Почему бы её не сделать void?
     {
         fixBalance(current);
         if( difference(current) == 2){
