@@ -1,12 +1,14 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+
 struct node {
     long long x;
     long long y;
     int size;
     node* left;
     node* right;
+    
     node(long long val) {
         x = val;
         y = rand();
@@ -17,9 +19,9 @@ struct node {
     ~node() {
         if (left) delete left;
         if (right) delete right;
-    }
- 
+    } 
 };
+
 int get_size(node* root) {
     if (root) return root->size;
     else return 0;
@@ -110,4 +112,3 @@ int main() {
     }
     return 0;
 }
- 
