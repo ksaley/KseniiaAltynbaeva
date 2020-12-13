@@ -24,18 +24,18 @@ private:
         delete[] copy;
     }
     String(size_t sz) : sz(sz), capacity(sz), str(new char[sz]) {
-        memset(str, '\0', sz);
+        memset(str, '\0', sz);// не обязательно, всё равно как понимаю ты будешь эту память перезаписывать
     }
 public:
     String() = default;
-    String(const char filling):sz(1), capacity(1), str(new char[1]){
+    String(const char filling):sz(1), capacity(1), str(new char[1]){// Почему бы заранее не создавать массив в 2 раза больше, чтобы потом сразу не добавлять?
         memset(str, filling, sz);
     }
-    String(size_t sz, char filling) : sz(sz), capacity(sz), str(new char[sz]) {
+    String(size_t sz, char filling) : sz(sz), capacity(sz), str(new char[sz]) {// Аналогично
         memset(str, filling, sz);
     }
 
-    String(const char* s): sz(strlen(s)),capacity(sz), str(new char[sz]) {
+    String(const char* s): sz(strlen(s)), capacity(sz), str(new char[sz]) {
         strcpy(str, s);
     }
 
@@ -66,6 +66,7 @@ public:
         str[sz] = back;
         ++sz;
     }
+    
     void pop_back() {
         if (sz - 1 <= capacity/4) {
             change_capacity_down();
@@ -86,7 +87,7 @@ public:
         return str[i];
     }
     bool operator==(const String& s) {
-        bool flag = true;
+        bool flag = true;// elements_is_equal
         size_t index = 0;
         if (sz != s.sz) return false;
         while (flag && index < sz) {
@@ -115,7 +116,7 @@ public:
         return newstring;
     }
     void clear() {
-        while (sz> 0) {
+        while (sz> 0) {// n раз sz--? Зачем? Проще ведь сразу просто написать sz = 0, даже можно изменить размер на меньший, но не обязательно
             pop_back();
         }
     }
@@ -142,13 +143,13 @@ public:
         return stream;
     }
     String& operator+=(const String& s) {
-        size_t current = sz + s.sz;
+        size_t current = sz + s.sz;// А почему бы не провести проверку, вдруг у нас уже хватает места для добавления?
         char* copy = new char[current];
         memcpy(copy,str, sz);
         memcpy(copy + sz, s.str, s.sz);
         std::swap(copy,str);
         delete[] copy;
-        sz+= s.sz;
+        sz+= s.sz;// Кстати, у тебя не изменяется capacity, что может потом аукнуться, когда будешь pop делать
         return *this;
     }
     String& operator+=(const char s) {
@@ -157,16 +158,16 @@ public:
     }
     size_t find(const String& substring) const{
         for (size_t i = 0; i < sz - substring.sz;++i) {
-            bool flag = true;
+            bool flag = true;//elements_are_same лучше вместо flag
             for (size_t j = i; j < substring.sz + i; ++j) {
-                if (str[j] != substring.str[j - i]) flag = false;
+                if (str[j] != substring.str[j - i]) flag = false;// А зачем дальше сравнивать, можно сразу break делать если всё плохо
             }
             if (flag) return i;
         }
         return sz;
     }
-    size_t rfind(const String& substring) const     {
-        String reversesub(substring.sz);
+    size_t rfind(const String& substring) const{
+        String reversesub(substring.sz);// зачем делать копии, если можно сделать аналогично find, только с другой индексацией?
         String reverse(sz);
         for (size_t i = substring.sz; i > 0; --i) {
             reversesub[substring.sz - i] = substring[i - 1];
