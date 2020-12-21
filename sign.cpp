@@ -10,6 +10,7 @@ int PrefixSum(std::vector <int>& a, int position) { // сумма с 0 до k-т
 	return result;
 }
 
+
 void ModifyElement(std::vector <int>& a, int position, int newvalue) {
 	int current = PrefixSum(a,position) - PrefixSum(a, position- 1);
 	while (position < a.size()) {
