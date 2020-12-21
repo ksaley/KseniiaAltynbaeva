@@ -22,7 +22,9 @@ int main() {
 	const int max = 1000000000;
 	int size_of_array, amount_of_requests;
 	std::cin >> size_of_array >> amount_of_requests;
-	std::vector <std::vector<std::pair <int, int>>> array(std::ceil(log2l(size_of_array)), std::vector<std::pair<int, int>>(size_of_array + std::ceil(log2l(size_of_array))));
+	std::vector <std::vector<std::pair <int, int>>> array(std::ceil(log2l(size_of_array)), 
+							std::vector<std::pair<int, int>>(size_of_array + std::ceil(log2l(size_of_array))));
+							// Такие длинные строки нужно разбивать на подстроки
 	for (int i = 0; i < size_of_array; ++i) {
 		std::cin >> array[0][i].first;
 		array[0][i].second = max;
@@ -30,14 +32,14 @@ int main() {
 	
 	build_sparse_table(array, size_of_array);
 	std::vector <int> degree(size_of_array + 1);
-    build_degree(degree, size_of_array);
+    	build_degree(degree, size_of_array);
     
 	for (int i = 0; i < amount_of_requests; ++i) {
 		int left, right;
 		std::cin >> left >> right;
 		--left;
 		--right;
-		int k = degree[right - left + 1];
+		int k = degree[right - left + 1];// Это нужно вынетси в отдельную функцию как запрос
 			if (array[k][left].first != array[k][right - (1 << k) + 1].first) {
 				std::cout << std::min(std::max(array[k][left].first, array[k][right - (1 << k) + 1].first), std::min(array[k][left].second, array[k][right - (1 << k) + 1].second));
 				std::cout << std::endl;
