@@ -57,7 +57,7 @@ public:
         node* second = buckets[hash_second].find(y);
         int value_first = first->get_value(x);
         int value_second = second->get_value(y);
-        std::cout << std::abs(value_first - value_second) << std::endl;
+        std::cout << std::abs(value_first - value_second) << std::endl; // Выводится результат не из функции main, а изнутри класса. Это прописано в "Минимальные правила кодирования"
         buckets[hash_first].change_value(first, value_first, value_second);
         buckets[hash_second].change_value(second,value_second, value_first);
     }
