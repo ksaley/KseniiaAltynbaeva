@@ -41,7 +41,7 @@ struct list{
  
     void get(const std::string& key) {
         node* current = find(key);
-        if(current) std::cout << current->value << std::endl;
+        if(current) std::cout << current->value << std::endl; // результат выводится не из main
         else std::cout << "none" << std::endl;
     }
  
