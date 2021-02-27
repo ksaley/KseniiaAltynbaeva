@@ -17,7 +17,7 @@ struct list{
     void push(const std::string& key, const std::string& value) {
         node* current = find(key);
         if(!current) {
-            node *next = new node(key, value, last);
+            node *next = new node(key, value, last); // не освобождается память для всего что не удалилось, как и в предыдущих задачах
             last = next;
         }
         else {
@@ -112,7 +112,7 @@ int main() {
             std::cin >> y;
             hashTable.insert(x,y);
         }
-        if (s == "delete") {
+        if (s == "delete") { // лучше сделать else if, чтобы лишний раз не сравнивать строки
             hashTable.extract(x);
         }
         if ( s == "get") {
