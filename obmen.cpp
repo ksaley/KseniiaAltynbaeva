@@ -9,7 +9,7 @@ struct node {
     node* prev = nullptr;
     node(int s, int value, node* prev):variable_name(s),value(value), prev(prev) {}
     int get_value(int x) {
-        return  this? this->value:x;
+        return  this? this->value:x; // какая-то странная конструкция, если указатель на текущий объект = 0, то уже при вызове его метода get_value будет исключение
     }
 };
  
@@ -18,7 +18,7 @@ struct list{
  
     void change_value(node* current, int prev, int value) {
         if(!current) {
-            node *next = new node(prev, value, last);
+            node *next = new node(prev, value, last); // не освобождается память
             last = next;
         }
         else {
