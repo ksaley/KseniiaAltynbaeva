@@ -12,7 +12,7 @@ struct node {
     node(const std::string& s, int value, node* prev):variable_name(s),value(value), prev(prev) {}
 };
  
-struct list{
+struct list{ // Можно было попробовать использовать std::list, чтобы не писать это самостоятельно
     node* last = nullptr;
     void push(const std::string& variable_name, int add) {
         node* current = find(variable_name);
