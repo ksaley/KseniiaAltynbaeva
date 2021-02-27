@@ -17,9 +17,9 @@ struct list{
     void push(const std::string& variable_name, int add) {
         node* current = find(variable_name);
         if(!current) {
-            node *next = new node(variable_name, add, last);
+            node *next = new node(variable_name, add, last); // выделенная память не освобождается
             last = next;
-            std::cout << next->value << std::endl;
+            std::cout << next->value << std::endl; // как-то странно выводить результат задачи изнутри класса, мне кажется, что лучше вернуть его и вывести в функции main
         }
         else {
             current->value += add;
