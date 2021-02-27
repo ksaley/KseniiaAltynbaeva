@@ -9,7 +9,7 @@ struct node {
     std::pair<int, int> coordinates;
     node* prev;
     node(std::pair <int,int> input, node* prev):coordinates(input), prev(prev) {}
-};
+}; 
  
 struct list{
     node* last = nullptr;
