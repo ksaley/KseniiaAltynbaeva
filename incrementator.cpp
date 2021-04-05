@@ -4,28 +4,27 @@
 #include <random>
 #include <ctime>
 #pragma GCC optimize("Ofast")
- 
+
 struct node {
     std::string variable_name;
     int value;
     node* prev;
     node(const std::string& s, int value, node* prev):variable_name(s),value(value), prev(prev) {}
 };
- 
-struct list{ // Можно было попробовать использовать std::list, чтобы не писать это самостоятельно
+
+struct list{
     node* last = nullptr;
-    void push(const std::string& variable_name, int add) {
+    int push(const std::string& variable_name, int add) {
         node* current = find(variable_name);
         if(!current) {
-            node *next = new node(variable_name, add, last); // выделенная память не освобождается
+            node *next = new node(variable_name, add, last);
             last = next;
-            std::cout << next->value << std::endl; // как-то странно выводить результат задачи изнутри класса, мне кажется, что лучше вернуть его и вывести в функции main
+            return next->value;
         }
         else {
             current->value += add;
-            std::cout << current->value << std::endl;
+            return current->value;
         }
- 
     }
     node* find(const std::string& variable_name) {
         node* current = last;
@@ -34,19 +33,26 @@ struct list{ // Можно было попробовать использова�
         }
         return current;
     }
+    ~list() {
+        while (last) {
+            node* copy = last;
+            last = last->prev;
+            delete copy;
+        }
+    }
 };
- 
+
 class Hash_table {
 private:
     static const size_t hash_table_size = 60000001ull;
     std::vector<list> buckets;
-    const unsigned long long prime =  1e8 + 7;//65610001ull;
+    const unsigned long long prime =  1e8 + 7;
     unsigned long long a, b;
- 
+
     unsigned long long hash_function(const std::string& variable_name) {
         return ((a * string_to_int(variable_name) + b) % prime % hash_table_size);
     }
- 
+
     unsigned long long string_to_int(const std::string& variable_name) {
         unsigned long long sum = 0;
         unsigned long long x = 1;
@@ -58,20 +64,19 @@ private:
         }
         return sum % prime;
     }
- 
+
 public:
     Hash_table(): buckets(hash_table_size){
         std::mt19937 engine;
         engine.seed(std::time(nullptr));
         a = engine() % hash_table_size;
         b = engine() % hash_table_size;
-        //std::cout << a << " "<< b;
     }
-    void insert(const std::string& variable_name, int add) {
-        buckets[hash_function(variable_name)].push(variable_name,add);
+    int insert(const std::string& variable_name, int add) {
+        return buckets[hash_function(variable_name)].push(variable_name,add);
     }
 };
- 
+
 int main() {
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(nullptr);
@@ -81,7 +86,7 @@ int main() {
     while(std::cin >> s) {
         int n;
         std::cin >> n;
-        hashTable.insert(s,n);
+        std::cout << hashTable.insert(s,n) << std::endl;
     }
     return 0;
 }
