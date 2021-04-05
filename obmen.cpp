@@ -8,8 +8,8 @@ struct node {
     int value = 0;
     node* prev = nullptr;
     node(int s, int value, node* prev):variable_name(s),value(value), prev(prev) {}
-    int get_value(int x) {
-        return  this? this->value:x; // какая-то странная конструкция, если указатель на текущий объект = 0, то уже при вызове его метода get_value будет исключение
+    int get_value() {
+        return  value;
     }
 };
  
@@ -18,7 +18,7 @@ struct list{
  
     void change_value(node* current, int prev, int value) {
         if(!current) {
-            node *next = new node(prev, value, last); // не освобождается память
+            node *next = new node(prev, value, last);
             last = next;
         }
         else {
@@ -32,6 +32,13 @@ struct list{
             current = current->prev;
         }
         return current;
+    }
+    ~list() {
+        while (last) {
+            node* copy = last;
+            last = last->prev;
+            delete copy;
+        }
     }
 };
  
@@ -50,16 +57,17 @@ public:
         return (a * current + b) % prime % hash_table_size;
     }
  
-    void swap(int x, int y)  {
+    int swap(int x, int y)  {
         int hash_first = hash_function(x);
         int hash_second = hash_function(y);
         node* first = buckets[hash_first].find(x);
         node* second = buckets[hash_second].find(y);
-        int value_first = first->get_value(x);
-        int value_second = second->get_value(y);
-        std::cout << std::abs(value_first - value_second) << std::endl; // Выводится результат не из функции main, а изнутри класса. Это прописано в "Минимальные правила кодирования"
+        int value_first = first?first->get_value():x;
+        int value_second = second?second->get_value():y;
+        int ans = std::abs(value_first - value_second);
         buckets[hash_first].change_value(first, value_first, value_second);
         buckets[hash_second].change_value(second,value_second, value_first);
+        return ans;
     }
 };
  
@@ -73,7 +81,7 @@ int main() {
     for (int i = 0; i < n; ++i) {
         int first, second;
         std::cin >> first >> second;
-        hashTable.swap(first,second);
+        std::cout << hashTable.swap(first,second) << std::endl;
     }
     return 0;
 }
