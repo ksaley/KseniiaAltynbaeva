@@ -14,16 +14,22 @@ private:
       }
       void increase() {
           if (!buckets.size()) {
-              auto current  = reinterpret_cast <std::vector<T>*> (new std::vector<int8_t[sizeof(T)]>(buf_size));
+              // Воу, неожиданно. В целом вектор сам по себе умеет изменять свой размер под необходимый без создания элементов через reserve, поэтому можно и без такой магии
+              // Тем более такие операции над неявными контейнерами в целом запрещены, так как неизвестно, как именно он хранится в памяти для разных template и всё может
+              // сломаться. Лучше переделать
+              auto current  = reinterpret_cast <std::vector<T>*> (new std::vector<int8_t[sizeof(T)]>(buf_size) );
               buckets.push_back(current);
               first = buf_size / 2;
               return;
           }
           size_t prev_size = buckets.size();
           for (size_t i = 0; i < prev_size; ++i) {
-              auto current  = reinterpret_cast <std::vector<T>*> (new std::vector<int8_t[sizeof(T)]>(buf_size));
+              // Аналогично
+              auto current  = reinterpret_cast <std::vector<T>*> (new std::vector<int8_t[sizeof(T)]>(buf_size) );
               buckets.push_back(current);
           }
+          // Вот она - основная проблема использования вектора. Кроме такого сдвига вектор ещё и сам перемещает все свои элементы, из-за чего по факту всё двигается по памяти
+          // при рассширении не один, а два раза, что дороже (хоть и не сильно), но ладно.
           for (size_t i = buckets.size()/2 ; i > 0; --i) {
               std::swap(buckets[i - 1], buckets[i + buckets.size()/4 - 1]);
           }
@@ -87,6 +93,8 @@ public:
                 ptr = &((*k)[place % buf_size]);
             return *this;
         }
+        // Оператор разницы должен возвращать число, равное разнице позиций итераторов (то есть такое число, которое нужно прибавить ко второму, чтобы получить первый)
+        // А тесты прошло потому что у тебя есть каст к int. Переделай
         common_iterator& operator-(common_iterator current) {
             auto it = new common_iterator(ptr, place, main_ptr);
             it->place -= current.place;
@@ -127,8 +135,8 @@ public:
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-     iterator begin() {
-            return iterator(&(*this)[0], first, &(this->buckets));
+    iterator begin() {
+        return iterator(&(*this)[0], first, &(this->buckets));
     };
     iterator end() {
         return iterator(&(*this)[sz],first + sz, &(this->buckets));
@@ -169,6 +177,7 @@ Deque<T>::Deque() = default;
 template<typename T>
 Deque<T>::Deque(size_t n): sz(n) {
     first = 0;
+    // А почему бы сразу не сделать в 2 раза больше?
     size_t capacity = n / buf_size + 1;
     for (size_t  i = 0; i < capacity; ++i) {
         auto *current = new std::vector<T>(buf_size);
@@ -187,6 +196,10 @@ Deque<T>::Deque(size_t n, const T& fill): sz(n) {
     }
     size_t i = first;
     for(; i < first + copy; ++i) {
+        // Так запрещено делать, так как у типа Т как минимум может не оказаться оператора =. Или, что ещё хуже и чаще так и бывает, он требует уже существование объекта
+        // по адрессу, а у тебя там пусто. С точки зрения стандартных массивов требуется вызывать new (*ptr) T(fill). При этом так же стоило обернуть это всё в защищённый от
+        // исключений код.
+        // С точки зрения вектора здесь требуется писать emplace_back (fill) в том бакете, где ты его хочешь создать (с учётом reserve, только так и получится). Переделай
         (*this)[i] = T(fill);
     }
     auto current  = reinterpret_cast <std::vector<T>*> (new std::vector<int8_t[sizeof(T)]>(buf_size));
@@ -204,6 +217,7 @@ Deque<T>::Deque(const Deque& arr) {
     }
         size_t i = arr.first;
         for(; i < first + arr.sz; ++i) {
+            // Аналогично
             (*this)[i]  =  arr[i];
         }
     auto current  = reinterpret_cast <std::vector<T>*> (new std::vector<int8_t[sizeof(T)]>(buf_size));
@@ -247,6 +261,7 @@ void Deque<T>::push_back(const T& value) {
         increase();
     }
     ++sz;
+    // Аналогично
     (*this)[sz-1] = value;
 }
 
@@ -276,7 +291,7 @@ void Deque<T>::insert(Deque::iterator it, const T& value) {
     size_t place = it.place;
     auto it2 = this->end();
     this->push_back(value);
-    while(  it2.place != (place)) {
+    while(it2.place != (place)) {
         std::swap((*this)[it2.place - first], (*this)[it2.place - first - 1]);
         --it2;
     }
@@ -317,7 +332,3 @@ Deque<T>& Deque<T>::operator=(const Deque &arr) {
     buckets.push_back(current);
     return *this;
 }
-
-
-
-
