@@ -14,7 +14,9 @@ void dfs(std::vector<int>& tin, std::vector<int>& tout, std::vector<std::vector<
     tout[v] = timer++;
     color[v] = "BLACK";
 }
- 
+int is_parent( std::vector<int>& tin,  std::vector<int>& tout,int x, int y){
+    return (tin[x] < tin[y] && tout[x]> tout[y])?1:0;
+}
 int main() {
     int vertex;
     std::cin >> vertex;
@@ -26,19 +28,19 @@ int main() {
         if (!x) place = i;
         table[x].push_back(i);
     }
+
     std::vector<int> tin(vertex + 1);
     std::vector<int> tout(vertex + 1);
     std::vector<std::string> color(vertex + 1, "WHITE");
     std::vector<int> par(vertex + 1, -1);
- 
-        dfs(tin, tout,table, color, par, place);
- 
+    dfs(tin, tout,table, color, par, place);
+
     int request;
     std::cin >> request;
     for ( int i = 0; i < request; ++i) {
         int x, y;
         std::cin >> x >> y;
-        std::cout << ((tin[x] < tin[y] && tout[x]> tout[y])?1:0) << std::endl;
+        std::cout << is_parent(tin, tout, x, y) << std::endl;
     }
     return 0;
 }
