@@ -24,7 +24,7 @@ char* FixedAllocator<chunkSize>::allocate() {
     char* copy;
     if (!this->alloc_ptr) {
         char* block  = reinterpret_cast<char*> (::operator new[](block_size * chunkSize));
-        this->alloc_ptr = reinterpret_cast<char*> (block);
+        this->alloc_ptr = reinterpret_cast<char*> (block);// А зачем второй раз кастовать тот же самый блок?
         this->blocks.push_back(block);
         copy = this->alloc_ptr;
         this->alloc_ptr += chunkSize;
@@ -45,6 +45,7 @@ char* FixedAllocator<chunkSize>::allocate() {
     return copy;
 }
 
+// Такую функцию по хорошему следует делать так же static
 template<size_t chunkSize>
 char* FixedAllocator<chunkSize>::getInstance(char* ptr) {
 //    if (single == nullptr) {
@@ -108,7 +109,7 @@ public:
         }
         ::operator delete(ptr);
     }
-    template <typename... Args>
+    template <typename... Args>// В таком виде не обязательно их объявлять, они будут сгенерированы автоматически через TypeTraits
     void construct(T* ptr, const Args&... args) {
         new(ptr) T(args...);
     }
@@ -164,7 +165,7 @@ public:
         }
 
         common_iterator() {}
-        std::conditional_t<IsConst,const T&, T&> operator*() {
+        std::conditional_t<IsConst,const T&, T&> operator*() {// reference
             return ptr->value;
         }
         //common_iterator(const common_iterator& it) {
@@ -249,7 +250,7 @@ public:
 
 template<typename T, typename Allocator>
 List<T, Allocator>::List(const Allocator &alloc):alloc(alloc) {
-    fake = reinterpret_cast<Node*> (operator new(sizeof(Node)));
+    fake = reinterpret_cast<Node*> (operator new(sizeof(Node)));// У тебя для этого есть аллокатор. -5%
     fake->next = fake;
     fake->prev = fake;
 }
@@ -277,7 +278,7 @@ List<T, Allocator>::List(size_t count, const T& value, const Allocator& alloc):L
 
 template<typename T, typename Allocator>
 Allocator List<T, Allocator>::get_allocator() {
-    return alloc   ;
+    return alloc;
 }
 
 template<typename T, typename Allocator>
@@ -410,7 +411,7 @@ void List<T, Allocator>::erase(List::const_iterator it) {
 
 template<typename T, typename Allocator>
 List<T, Allocator>::List(const List& another) {
-    fake = reinterpret_cast<Node*> (operator new(sizeof(Node)));
+    fake = reinterpret_cast<Node*> (operator new(sizeof(Node)));// Аналогично, для этого есть аллокатор
     fake->next = fake;
     fake->prev = fake;
     alloc = AllocTraits::select_on_container_copy_construction(another.alloc);
