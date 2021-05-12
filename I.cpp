@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 #include <algorithm>
-int timer = 0;
+int timer = 0; // лучше использовать только глобальные константы
  
 void dfs(std::vector<bool>& bridges, std::vector<int>& ret, std::vector<int>& tin, std::vector<int>& tout,
          std::vector<std::vector<int>>& table, std::vector <bool>& used, int vertex, int p = -1) {
