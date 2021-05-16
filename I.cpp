@@ -1,11 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <string>
-#include <map>
 #include <algorithm>
-int timer = 0; // лучше использовать только глобальные константы
- 
-void dfs(std::vector<bool>& bridges, std::vector<int>& ret, std::vector<int>& tin, std::vector<int>& tout,
+
+void dfs(int& timer,std::vector<bool>& bridges, std::vector<int>& ret, std::vector<int>& tin, std::vector<int>& tout,
          std::vector<std::vector<int>>& table, std::vector <bool>& used, int vertex, int p = -1) {
     tin[vertex] = timer++;
     ret[vertex] = tin[vertex];
@@ -17,7 +14,7 @@ void dfs(std::vector<bool>& bridges, std::vector<int>& ret, std::vector<int>& ti
             ret[vertex]  = std::min(ret[vertex], tin[next]);
         }
         else {
-            dfs(bridges,ret, tin, tout, table, used, next, vertex);
+            dfs(timer, bridges,ret, tin, tout, table, used, next, vertex);
             ++ cnt;
             ret[vertex] = std::min(ret[vertex], ret[next]);
             if (p!= -1) {
@@ -28,7 +25,7 @@ void dfs(std::vector<bool>& bridges, std::vector<int>& ret, std::vector<int>& ti
             else if (cnt >= 2){
                 bridges[vertex] = true;
             }
- 
+
         }
     }
     tout[vertex] = timer++;
@@ -37,13 +34,14 @@ std::vector<bool> get_bridges(std::vector <std::vector<int>>& table, int vertex)
     std::vector <int> tin(vertex + 1), tout(vertex + 1), ret(vertex + 1);
     std::vector <bool> used (vertex + 1, false);
     std::vector<bool> bridges(vertex + 1, false);
+    int timer = 0;
     for (int i = 1; i  <= vertex; ++i) {
         if (used[i]) continue;
-        dfs(bridges, ret, tin, tout, table, used, i);
+        dfs(timer,bridges, ret, tin, tout, table, used, i);
     }
     return bridges;
 }
- 
+
 int get_bridges_amount(std::vector<bool>& bridges) {
     int ans = 0;
     for (auto cur : bridges) {
@@ -51,7 +49,7 @@ int get_bridges_amount(std::vector<bool>& bridges) {
     }
     return ans;
 }
- 
+
 int main() {
     int edge, vertex;
     std::cin >> vertex >> edge;
