@@ -20,40 +20,48 @@ struct edge {
     }
 };
 
-
-long long prims_algorithm(std::vector<std::vector<edge>>& edges) {
-    std::vector<bool> used(edges.size(), false);
-    used[1] = true;
-    std::set<edge> q;
-    long long ans = 0;
-    for (auto& e : edges[1]) {
-        q.insert(e);
+int get(int v, std::vector<int >& prev) {
+    if (prev[v] == -1) {
+        return v;
     }
-    while (!q.empty()) {
-        auto front = *q.begin();
-        q.erase(*q.begin());
-        auto vertex = front.to;
-        if (used[vertex]) continue;
-        used[vertex] = true;
-        ans += front.weight;
-        for (auto& e : edges[vertex]) {
-            if (used[e.to]) continue;
-            q.insert(e);
+    else {
+        return prev[v] = get(prev[v], prev);
+    }
+}
+
+void unite(int u, int v, std::vector<int>& size, std::vector<int >& prev) {
+    u = get(u, prev);
+    v= get(v, prev);
+    if (u == v) return;
+    if (size[v] < size[v]) std::swap(u, v);
+    prev[v] = u;
+    size[u]+=size[v];
+}
+
+long long kruskal_algorithm(int n, std::set <edge>& edges) {
+    std::vector<int> prev(n+1,-1);
+    std::vector<int> size(n+1, 1);
+    long long ans = 0;
+    while(!edges.empty()) {
+        auto front = *(edges.begin());
+        edges.erase(edges.begin());
+        if (get(front.to, prev)!= get(front.from, prev)) {
+            ans += front.weight;
+            unite(front.to, front.from,size, prev);
         }
-   }
+    }
     return ans;
 }
 
 int main() {
     int n, m;
     std::cin >> n >> m;
-    std::vector<std::vector<edge>> edges(n + 1);
+    std::set<edge> edges;
     for (int i = 1; i <= m; ++i) {
         int from, to, weight;
         std::cin >> from >> to >> weight;
-        edges[from].push_back(edge(from, to, weight));
-        edges[to].push_back(edge(to, from, weight));
+        edges.insert(edge(from, to, weight));
     }
-    std::cout << prims_algorithm(edges);
+    std::cout << kruskal_algorithm(n, edges);
     return 0;
 }
