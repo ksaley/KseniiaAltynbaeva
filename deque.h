@@ -107,6 +107,7 @@ public:
         std::conditional_t<IsConst, T*, const T*> operator ->() const {
             return ptr;
         }
+        // Ну, каст можно было и не удалять)
         bool operator==(common_iterator current) const {
             return ptr == current.ptr;
         }
