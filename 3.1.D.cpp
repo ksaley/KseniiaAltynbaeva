@@ -81,9 +81,9 @@ int main() {
     auto vec = data.first;
     auto trie = data.second;
     int t = 0;
-    auto *s = new std::string();
+    auto *s = new std::string(); // можно просто std::string s создать вроде, зачем так сложно?
     dfs(vec, trie, 0, s, t);
-    if (t == int(vec.size()) - 1) {
+    if (t == int(vec.size()) - 1) { // std::size_t - это вроде unsigned int, приводя его к int можно получить другое значение. Можно t объявить как std::size_t t = 0
         for (int j = 0; j < vec[t]; ++j) {
             std::cout << '.';
         }
