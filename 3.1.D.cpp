@@ -22,7 +22,7 @@ void add(std::vector<node> &trie, const std::string &string) {
 }
 
 void dfs(std::vector<int> &points, std::vector<node> &trie,
-         int v, std::string *p, int &pos) {
+         int v, std::string *p, long long &pos) {
     for (auto to: trie[v].to) {
         if (trie[to.second].term) {
             for (int i = 0; i < trie[to.second].amount; ++i) {
@@ -80,13 +80,13 @@ int main() {
     auto data = read();
     auto vec = data.first;
     auto trie = data.second;
-    int t = 0;
-    auto *s = new std::string(); // можно просто std::string s создать вроде, зачем так сложно?
-    dfs(vec, trie, 0, s, t);
-    if (t == int(vec.size()) - 1) { // std::size_t - это вроде unsigned int, приводя его к int можно получить другое значение. Можно t объявить как std::size_t t = 0
+    long long t = 0;
+    long long size = vec.size();
+    std::string s;
+    dfs(vec, trie, 0, &s, t);
+    if (t == size - 1) {
         for (int j = 0; j < vec[t]; ++j) {
             std::cout << '.';
         }
     }
-    delete s;
 }
