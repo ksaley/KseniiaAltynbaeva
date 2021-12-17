@@ -13,7 +13,7 @@ void fourier_transform(std::vector<base>& c, bool invert,
  
     std::vector<base> c1(half), c2(half);
     for (size_t i = 0; i < half; ++i) {
-        c1[i] = c[2 * i];
+        c1[i] = c[2 * i]; // лучше использовать меньше однобуквенных имен
         c2[i] = c[2 * i + 1];
     }
  
